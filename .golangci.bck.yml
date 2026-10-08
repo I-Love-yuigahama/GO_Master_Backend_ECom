@@ -1,0 +1,78 @@
+# ------------------------------------------------------------
+# .golangci.yml: configuration for golangci-lint
+# golangci-lint = runs many Go "linters" at once.
+# A linter = a tool that reads your code and finds bugs,
+# bad style, or unused code, without running the program.
+# golangci-lint 的配置文件；linter = 自动检查代码问题的工具。
+# ------------------------------------------------------------
+
+# ------------------------------------------------------------
+# run: general settings for how golangci-lint runs.
+# 运行设置。
+# ------------------------------------------------------------
+run:
+  # timeout: stop if linting takes longer than this.
+  # 5m = 5 minutes. Prevents it hanging forever on big projects.
+  timeout: 5m
+
+  # modules-download-mode: how Go handles dependencies (go.mod) while linting.
+  # readonly = never change go.mod / go.sum automatically;
+  # fail instead if something is missing. Keeps your files safe.
+  # 只读模式：检查时不会自动修改 go.mod。
+  modules-download-mode: readonly
+
+# ------------------------------------------------------------
+# linters: which checks to turn on.
+# 要开启哪些检查工具。
+# ------------------------------------------------------------
+linters:
+  # enable: list of linters to turn ON (in addition to defaults).
+  enable:
+    - errcheck      # Finds errors you forgot to check (e.g. ignoring err from a function)
+    - gosimple      # Suggests simpler ways to write the same code
+    - govet         # Go's official checker: finds suspicious code (wrong Printf format, etc.)
+    - ineffassign   # Finds values assigned to a variable but never used
+    - staticcheck   # Big, well-known checker for bugs and bad patterns
+    - typecheck     # Makes sure the code compiles (type errors)
+    - unused        # Finds unused functions, variables, constants, types
+    - gofmt         # Checks code is formatted like `gofmt` (Go's standard format)
+    - goimports     # Checks imports are formatted and grouped correctly
+    - misspell      # Finds common English spelling mistakes in comments/strings
+    - gocritic      # Many extra checks for style, performance and possible bugs
+    - revive        # Style checker (replacement for the old "golint")
+
+# ------------------------------------------------------------
+# linters-settings: detailed options for specific linters.
+# 每个 linter 的详细设置。
+# ------------------------------------------------------------
+linters-settings:
+
+  # errcheck settings
+  errcheck:
+    # check-type-assertions: also flag unchecked type assertions.
+    # Bad:  v := x.(string)         -> panics if x is not a string
+    # Good: v, ok := x.(string)     -> safe, you can check ok
+    # 检查类型断言是否有处理失败的情况。
+    check-type-assertions: true
+
+  # gocritic settings
+  gocritic:
+    # enabled-tags: turn on groups of gocritic checks by category.
+    # 按类别开启检查。
+    enabled-tags:
+      - diagnostic     # Possible bugs / mistakes
+      - experimental   # Newer checks, may be noisier
+      - opinionated    # Style choices some people disagree with
+      - performance    # Code that could be faster / use less memory
+      - style          # Readability and code style
+
+  # revive settings
+  revive:
+    # rules: which revive rules to apply.
+    rules:
+      # exported: exported names (starting with a Capital letter)
+      # should have a doc comment, e.g.
+      #   // GetUser returns a user by ID.
+      #   func GetUser(id int) ...
+      # 公开（大写开头）的函数/类型要写注释。
+      - name: exported

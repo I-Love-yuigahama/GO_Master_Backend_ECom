@@ -1,0 +1,44 @@
+#Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+
+#Test binary, build with go Test-c
+*.test
+
+#Output of the go converage tool
+*.out
+
+#Dependency Directories
+vendor/
+
+#Go workspaec file
+go.work
+
+#Environment FIle
+.env
+
+
+#IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# os 
+.DS_Store
+Thumb.db
+
+#Upload
+uploads/
+
+#Database
+*.db
+*.sqlite
+
+#logs
+*.log

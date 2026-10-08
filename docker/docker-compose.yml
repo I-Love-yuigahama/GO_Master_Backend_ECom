@@ -1,0 +1,101 @@
+# ------------------------------------------------------------
+# version: which Docker Compose file format this file uses.
+# Newer Docker ignores it (may show a warning), but it's harmless.
+# 文件格式版本，新版 Docker 可以不写。
+# ------------------------------------------------------------
+# Docker Compose file version (optional in newer Docker; it may just show a warning)
+# version: "3.8"
+
+# ------------------------------------------------------------
+# services: the list of containers this project needs.
+# A "container" = a small isolated box running one program
+# (e.g. a database) without installing it on your PC.
+# Each name under "services" (postgres, localstack) is one container.
+# services = 要运行的容器列表，每个名字就是一个容器。
+# ------------------------------------------------------------
+# List of containers (services) to run
+services:
+
+  # ============================================================
+  # PostgreSQL: the main database for the e-commerce app
+  # ============================================================
+  # "postgres" here is just a label we chose. Other containers
+  # can reach this one using the name "postgres" as the hostname.
+  # 服务名称，自己取的名字。
+  postgres:
+    # image: the "template" a container is created from.
+    # Format = name:tag  ->  postgres = which software, 12-alpine = which version.
+    # Docker downloads it from Docker Hub the first time.
+    # image = 容器的模板（安装包），冒号后面是版本。
+    image: postgres:12-alpine             # PostgreSQL version 12, "alpine" = small, lightweight image
+
+    # container_name: a fixed name for the running container.
+    # Without it, Docker makes a random-looking name.
+    # 给容器取一个固定名字。
+    container_name: postgres_container    # Fixed container name (shown in `docker ps`)
+
+    # environment: settings (environment variables) given to the program
+    # inside the container. The postgres image reads these on FIRST start
+    # to create the user, password and database.
+    # environment = 传给容器的设置（环境变量）。
+    environment:                          # Settings passed into the container
+      POSTGRES_USER: postgres             # Database username
+      POSTGRES_PASSWORD: password         # Database password (local dev only)
+      POSTGRES_DB: ecommerce_shop         # Database created automatically on first start
+
+    # ports: opens a "door" from your PC into the container.
+    # Format = "PC_port:container_port".
+    # Without this, apps on your PC (Go code, migrate, pgAdmin) can't reach it.
+    # ports = 把容器的端口连到你电脑的端口。
+    ports:
+      - "5432:5432"                       # yourPC:container -> connect via localhost:5432
+
+    # volumes: permanent storage for the container.
+    # Containers are temporary: delete one and its files are gone.
+    # A volume keeps the data outside the container so it survives.
+    # Format = volume_name:folder_inside_container
+    # volumes = 持久化存储，删除容器后数据还在。
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # Keep database data even if the container is removed
+
+  # ============================================================
+  # LocalStack: fake AWS running on your PC (for local testing)
+  # ============================================================
+  # Lets your code use AWS services (S3, SQS) locally,
+  # with no AWS account and no cost.
+  # 在本机模拟 AWS，测试不用花钱。
+  localstack:
+    # image name has a "/" -> localstack/localstack = account "localstack",
+    # image "localstack". latest = newest version (can change over time).
+    image: localstack/localstack:latest   # Official LocalStack image, newest version
+    container_name: localstack_container  # Fixed container name
+
+    # environment can also be written as a list: - KEY=VALUE
+    # (same meaning as KEY: VALUE used in the postgres block above)
+    # 两种写法效果一样。
+    environment:
+      - SERVICES=s3,sqs                   # Only start these AWS services: S3 (file storage), SQS (message queue)
+      - DEFAULT_REGION=us-east-1          # Fake AWS region
+      - AWS_ACCESS_KEY_ID=test            # Fake AWS key (LocalStack accepts any value)
+      - AWS_SECRET_ACCESS_KEY=test        # Fake AWS secret
+      - DATA_DIR=/tmp/localstack/data     # Where LocalStack stores its data inside the container
+
+    # 4566 = LocalStack's single entry point.
+    # In Go/AWS SDK, set the endpoint to http://localhost:4566
+    ports:
+      - "4566:4566"                       # LocalStack Gateway: all AWS services go through this one port
+
+    volumes:
+      - localstack_data:/var/lib/localstack   # Keep LocalStack data between restarts
+
+# ------------------------------------------------------------
+# Top-level volumes: declares (creates) the named volumes used above.
+# Every volume name used in a service must be listed here,
+# otherwise Docker Compose gives an "undefined volume" error.
+# Empty value after ":" = use Docker's default settings.
+# 在这里声明上面用到的 volume。
+# ------------------------------------------------------------
+# Named volumes (Docker-managed storage) used above
+volumes:
+  postgres_data:      # Stores PostgreSQL data
+  localstack_data:    # Stores LocalStack data
