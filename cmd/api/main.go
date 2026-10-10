@@ -1,8 +1,6 @@
 package main
 
 import (
-	// "fmt"
-
 	"Ecom.com/TUT/internal/config"
 	"Ecom.com/TUT/internal/database"
 	"Ecom.com/TUT/internal/logger"
@@ -18,7 +16,7 @@ func main() {
 		log.Fatal().Err(err).Msg("failed to load config")
 	}
 
-	db, err := database.New(cfg.Database)
+	db, err := database.New(&cfg.Database)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load db")
 	}
@@ -32,6 +30,6 @@ func main() {
 	defer mainDB.Close()
 
 	gin.SetMode(cfg.Server.GinMode)
-	
+
 	log.Info().Msg("staring server")
 }

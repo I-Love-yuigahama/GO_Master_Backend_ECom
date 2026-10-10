@@ -91,3 +91,22 @@ type User struct {
 	// One user has ONE cart (one-to-one).
 	Cart Cart `json:"-"`
 }
+
+type UserRole string
+
+const (
+	UserRoleCustomer UserRole = "customer"
+	UserRoleAdmin    UserRole = "admin"
+)
+
+type RefreshToken struct {
+	ID        uint           `json:"id" gorm:"primaryKey"`
+	UserID    uint           `json:"user_id" gorm:"not null"`
+	Token     string         `json:"token" gorm:"uniqueIndex;not null"`
+	ExpiresAt time.Time      `json:"expires_at" gorm:"not null"`
+	CreatedAt time.Time      `json:"created_at"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
+
+	// Relationships
+	User User `json:"-"`
+}

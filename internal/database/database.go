@@ -10,7 +10,7 @@ import (
 )
 
 // New opens a connection to the PostgreSQL database using GORM.
-func New(cfg config.DatabaseConfig) (*gorm.DB, error) {
+func New(cfg *config.DatabaseConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC",
 		cfg.Host, cfg.User, cfg.Password, cfg.Name, cfg.Port, cfg.SSLMode,

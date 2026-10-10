@@ -18,7 +18,6 @@ type Config struct {
 	Upload   UploadConfig
 }
 
-
 // ServerConfig holds the HTTP server settings.
 type ServerConfig struct {
 	Port    string // Port the server listens on, e.g. "8080"
@@ -57,8 +56,8 @@ type UploadConfig struct {
 	MaxFileSize int64  // Maximum allowed file size in bytes (e.g. 10 << 20 = 10 MB)
 }
 
-func getEnv(key , defaultValue string)(string){
-	if value := os.Getenv(key); value != ""{
+func getEnv(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
 		return value
 	}
 
