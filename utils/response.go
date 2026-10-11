@@ -25,25 +25,25 @@ type PaginationMeta struct {
 	TotalPages int   `json:"total_pages"`
 }
 
-func SuccessResponse(c *gin.Context, message string , data interface{}){
-	c.JSON(http.StatusCreated,Response{
-		Success : true,
-		Message : message,
-		Data: data,
+func SuccessResponse(c *gin.Context, message string, data interface{}) {
+	c.JSON(http.StatusCreated, Response{
+		Success: true,
+		Message: message,
+		Data:    data,
 	})
 }
 
-func ErrorResponse(c *gin.Context, statusCode int , message string , err error){
+func ErrorResponse(c *gin.Context, statusCode int, message string, err error) {
 	response := Response{
 		Success: false,
 		Message: message,
 	}
 
-	if err != nil{
+	if err != nil {
 		response.Error = err.Error()
 	}
 
-	c.JSON(statusCode,response)
+	c.JSON(statusCode, response)
 }
 
 func BadRequestResponse(c *gin.Context, message string, err error) {
