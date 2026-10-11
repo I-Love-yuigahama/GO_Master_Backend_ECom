@@ -6,6 +6,7 @@ help:
 	@echo "  make run          - Run the application"
 	@echo "  make dev          - Run the application in development mode"
 	@echo "  make lint         - Run linter on the codebase"
+	@echo "  make format       - format the code and re-arrange the imports"
 	@echo "  make migrate-up   - Apply database migrations"
 	@echo "  make migrate-down - Rollback database migrations"
 	@echo "  make docker-up    - Start Docker containers"
@@ -22,6 +23,10 @@ dev:
 
 lint:
 	golangci-lint run ./...
+
+format:
+	@gofmt -s -w .
+	@goimports -w .
 
 migrate-up:
 	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" up
