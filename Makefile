@@ -39,3 +39,12 @@ docker-up:
 
 docker-down:
 	docker compose -f docker/docker-compose.yml down
+
+migrate-force:
+	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" force $(V)
+
+migrate-drop:
+	migrate -path db/migrations -database "postgresql://postgres:password@localhost:5432/ecommerce_shop?sslmode=disable" drop -f
+
+db-reset:
+	docker compose -f docker/docker-compose.yml exec postgres psql -U postgres -d ecommerce_shop -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
