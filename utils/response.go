@@ -26,7 +26,7 @@ type PaginationMeta struct {
 }
 
 func SuccessResponse(c *gin.Context, message string, data interface{}) {
-	c.JSON(http.StatusCreated, Response{
+	c.JSON(http.StatusOK, Response{ // was StatusCreated
 		Success: true,
 		Message: message,
 		Data:    data,
@@ -74,5 +74,13 @@ func PaginatedSuccessResponse(c *gin.Context, message string, data interface{}, 
 			Data:    data,
 		},
 		Meta: meta,
+	})
+}
+
+func CreatedResponse(c *gin.Context, message string, data interface{}) {
+	c.JSON(http.StatusCreated, Response{
+		Success: true,
+		Message: message,
+		Data:    data,
 	})
 }
