@@ -15,11 +15,10 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateTokenPair(cfg *config.JWTConfig, UserID uint, email, role string) (accssToken, refrehToken string, err error) {
-	// Access Token
+func GenerateTokenPair(cfg *config.JWTConfig, userID uint, email, role string) (accessToken, refreshToken string, err error) { // Access Token
 
 	accessClaims := &Claims{
-		UserID: UserID,
+		UserID: userID,
 		Email:  email,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -37,7 +36,7 @@ func GenerateTokenPair(cfg *config.JWTConfig, UserID uint, email, role string) (
 
 	// Refresh Token
 	refreshClaims := &Claims{
-		UserID: UserID,
+		UserID: userID,
 		Email:  email,
 		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
