@@ -29,8 +29,8 @@ func (s *AuthServices) Register(req *dto.RegisterRequest) (*dto.AuthResponse, er
 	// check if user
 	var existingUser models.User
 
-	if err := s.db.Where("user = ?", req.Email).First(&existingUser).Error; err != nil {
-		return nil, errors.New("user not found ")
+	if err := s.db.Where("email  = ?", req.Email).First(&existingUser).Error; err == nil {
+		return nil, errors.New("you cannot register this email  ")
 	}
 
 	// Hash password
