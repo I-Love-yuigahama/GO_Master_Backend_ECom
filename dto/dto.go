@@ -32,3 +32,9 @@ type UserResponse struct {
 	Role      string `json:"role"`
 	IsActive  bool   `json:"is_active"`
 }
+
+type UpdateProfileRequest struct {
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
+	Phone     string `json:"phone"`
+}
