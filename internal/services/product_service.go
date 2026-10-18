@@ -15,7 +15,7 @@ func NewProductServices(db *gorm.DB) *ProductServices {
 	return &ProductServices{db: db}
 }
 
-func (s ProductServices) CreateCatofry(req *dto.CreateCategoryRequest) (*dto.CategoryResponse, error) {
+func (s ProductServices) CreateCatogories(req *dto.CreateCategoryRequest) (*dto.CategoryResponse, error) {
 
 	category := models.Category{
 		Name:        req.Name,
