@@ -50,15 +50,15 @@ func main() {
 
 	var uploadProvider interfaces.UploadProvider
 
-	if cfg.Upload.UploadProvider == "s3"{
+	if cfg.Upload.UploadProvider == "s3" {
 		uploadProvider = providers.NewS3Provider(cfg)
-	}else {
+	} else {
 		uploadProvider = providers.NewLocalUploadProvider(cfg.Upload.Path)
 	}
 
 	uploadService := services.NewUploadServices(uploadProvider)
 
-	srv := server.New(cfg, db, &log, authServices, productService, userService,uploadService)
+	srv := server.New(cfg, db, &log, authServices, productService, userService, uploadService)
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{

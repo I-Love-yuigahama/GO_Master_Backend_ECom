@@ -5,6 +5,6 @@ import (
 )
 
 type UploadProvider interface {
-	UploadFile(file *multipart.FileHeader,path string) (string , error)
-	DeleteFile(path string)(error)
+	UploadFile(file *multipart.FileHeader, path string) (string, error)
+	DeleteFile(path string) error
 }

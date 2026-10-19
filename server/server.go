@@ -17,7 +17,7 @@ type Server struct {
 	authServices   *services.AuthServices
 	productService *services.ProductServices
 	userService    *services.UserService
-	uploadService *services.UploadService
+	uploadService  *services.UploadService
 }
 
 func New(cfg *config.Config,
@@ -36,7 +36,7 @@ func New(cfg *config.Config,
 		authServices:   authServices,
 		productService: productService,
 		userService:    userService,
-		uploadService: uploadService,
+		uploadService:  uploadService,
 	}
 }
 

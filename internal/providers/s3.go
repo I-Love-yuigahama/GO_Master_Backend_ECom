@@ -15,15 +15,15 @@ import (
 	appconfig "Ecom.com/TUT/internal/config"
 )
 
-type S3Provider struct{
-	client *s3.Client
+type S3Provider struct {
+	client   *s3.Client
 	uploader *manager.Uploader
-	bucket string
+	bucket   string
 	endpoint string
 }
 
-func NewS3Provider(cfg *appconfig.Config)(*S3Provider){
-		awsCfg, err := config.LoadDefaultConfig(context.TODO(),
+func NewS3Provider(cfg *appconfig.Config) *S3Provider {
+	awsCfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(cfg.AWS.Region),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
 			cfg.AWS.AccessKeyID,
@@ -32,11 +32,11 @@ func NewS3Provider(cfg *appconfig.Config)(*S3Provider){
 		)),
 	)
 
-	if err != nil{
+	if err != nil {
 		panic("failed to create aws config" + err.Error())
 	}
 
-		// Configure for localstack
+	// Configure for localstack
 	client := s3.NewFromConfig(awsCfg, func(o *s3.Options) {
 		if cfg.AWS.S3Endpoint != "" {
 			o.BaseEndpoint = aws.String(cfg.AWS.S3Endpoint)
@@ -44,7 +44,7 @@ func NewS3Provider(cfg *appconfig.Config)(*S3Provider){
 		}
 	})
 
-		return &S3Provider{
+	return &S3Provider{
 		client:   client,
 		uploader: manager.NewUploader(client),
 		bucket:   cfg.AWS.S3Bucket,
@@ -55,7 +55,7 @@ func NewS3Provider(cfg *appconfig.Config)(*S3Provider){
 
 func (p *S3Provider) UploadFile(file *multipart.FileHeader, path string) (string, error) {
 
-	log.Printf("Uploading file %s using s3",path)
+	log.Printf("Uploading file %s using s3", path)
 
 	src, err := file.Open()
 	if err != nil {

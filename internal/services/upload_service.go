@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"path/filepath"
 	"strings"
+
 	"github.com/google/uuid"
 
 	"Ecom.com/TUT/internal/interfaces"
@@ -14,7 +15,7 @@ type UploadService struct {
 	provider interfaces.UploadProvider
 }
 
-func NewUploadServices(provider interfaces.UploadProvider) *UploadService{
+func NewUploadServices(provider interfaces.UploadProvider) *UploadService {
 	return &UploadService{
 		provider: provider,
 	}
@@ -29,7 +30,7 @@ func (s *UploadService) UploadProductImage(productID uint, file *multipart.FileH
 
 	newFilename := uuid.New().String()
 
-	path := fmt.Sprintf("products/%d/%s%s", productID, newFilename,ext)
+	path := fmt.Sprintf("products/%d/%s%s", productID, newFilename, ext)
 
 	return s.provider.UploadFile(file, path)
 }

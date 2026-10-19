@@ -177,7 +177,6 @@ func (s *Server) uploadProductImage(c *gin.Context) {
 		return
 	}
 
-
 	url, err := s.uploadService.UploadProductImage(uint(id), file)
 	if err != nil {
 		utils.InternalServerErrorResponse(c, "Failed to upload image", err)
@@ -191,5 +190,3 @@ func (s *Server) uploadProductImage(c *gin.Context) {
 
 	utils.SuccessResponse(c, "Image uploaded successfully", map[string]string{"url": url})
 }
-
-
