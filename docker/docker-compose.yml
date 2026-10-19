@@ -79,6 +79,7 @@ services:
       - AWS_ACCESS_KEY_ID=test            # Fake AWS key (LocalStack accepts any value)
       - AWS_SECRET_ACCESS_KEY=test        # Fake AWS secret
       - DATA_DIR=/tmp/localstack/data     # Where LocalStack stores its data inside the container
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
 
     # 4566 = LocalStack's single entry point.
     # In Go/AWS SDK, set the endpoint to http://localhost:4566
@@ -86,7 +87,16 @@ services:
       - "4566:4566"                       # LocalStack Gateway: all AWS services go through this one port
 
     volumes:
-      - localstack_data:/var/lib/localstack   # Keep LocalStack data between restarts
+      # Keep LocalStack data between restarts
+      - localstack_data:/var/lib/localstack
+
+      # Mount our init script into LocalStack.
+      # Left side  = file on your PC (relative to this docker-compose.yml, i.e. docker/init/aws/init-localstack.sh)
+      # Right side = where it appears INSIDE the container.
+      # LocalStack automatically runs every script in /etc/localstack/init/ready.d/
+      # once it is ready, so this creates the S3 bucket on startup.
+      # 把初始化脚本放进容器，LocalStack 启动完成后会自动执行（建好 S3 bucket）。
+      - ./init/aws/init-localstack.sh:/etc/localstack/init/ready.d/init.sh
 
 # ------------------------------------------------------------
 # Top-level volumes: declares (creates) the named volumes used above.

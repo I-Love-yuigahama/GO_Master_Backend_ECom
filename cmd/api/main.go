@@ -12,7 +12,9 @@ import (
 
 	"Ecom.com/TUT/internal/config"
 	"Ecom.com/TUT/internal/database"
+	"Ecom.com/TUT/internal/interfaces"
 	"Ecom.com/TUT/internal/logger"
+	"Ecom.com/TUT/internal/providers"
 	"Ecom.com/TUT/internal/services"
 	"Ecom.com/TUT/server"
 	"github.com/gin-gonic/gin"
@@ -46,7 +48,17 @@ func main() {
 	productService := services.NewProductServices(db)
 	userService := services.NewUserService(db)
 
-	srv := server.New(cfg, db, &log, authServices, productService, userService)
+	var uploadProvider interfaces.UploadProvider
+
+	if cfg.Upload.UploadProvider == "s3"{
+		uploadProvider = providers.NewS3Provider(cfg)
+	}else {
+		uploadProvider = providers.NewLocalUploadProvider(cfg.Upload.Path)
+	}
+
+	uploadService := services.NewUploadServices(uploadProvider)
+
+	srv := server.New(cfg, db, &log, authServices, productService, userService,uploadService)
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{

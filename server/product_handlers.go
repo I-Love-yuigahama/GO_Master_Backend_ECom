@@ -4,8 +4,7 @@ import (
 	"strconv"
 
 	"Ecom.com/TUT/dto"
-	"Ecom.com/TUT/internal/providers"
-	"Ecom.com/TUT/internal/services"
+
 	"Ecom.com/TUT/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -179,10 +178,7 @@ func (s *Server) uploadProductImage(c *gin.Context) {
 	}
 
 
-	uploadProvider := providers.NewLocalUploadProvider(s.config.Upload.Path)
-	uploadService := services.NewUploadServices(uploadProvider)
-
-	url, err := uploadService.UploadProductImage(uint(id), file)
+	url, err := s.uploadService.UploadProductImage(uint(id), file)
 	if err != nil {
 		utils.InternalServerErrorResponse(c, "Failed to upload image", err)
 		return
