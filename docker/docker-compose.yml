@@ -58,6 +58,43 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data   # Keep database data even if the container is removed
 
+      # ============================================================
+  # CDN: Nginx web server that serves uploaded files (images)
+  # so the browser can load them by URL, e.g.
+  #   http://localhost:8081/uploads/products/1/photo.png
+  # 用 Nginx 提供上传的图片，让浏览器可以通过 URL 打开。
+  # ============================================================
+  cdn:
+    # nginx = a fast, lightweight web server.
+    # alpine = small, lightweight version of the image.
+    image: nginx:alpine
+
+    ports:
+      # yourPC:container -> open http://localhost:8081 on your PC.
+      # Nginx listens on port 80 inside the container.
+      # 8081 is used because 8080 is already your Go API.
+      - "8081:80"
+
+    volumes:
+      # Our Nginx settings file -> replaces Nginx's default settings.
+      # Left side is relative to this docker-compose.yml,
+      # so the file is docker/nginx/nginx.conf
+      # 用我们自己的 nginx 配置文件。
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+      # Share the project's uploads folder with Nginx.
+      # ../ = go up one folder (from docker/ to the project root),
+      # so this is GO_Master_Backend_ECom/uploads on your PC.
+      # Files your Go app saves there can be served by Nginx.
+      # 把项目的 uploads 文件夹共享给 Nginx。
+      - ../uploads:/var/www/uploads
+
+    # Start localstack BEFORE this container.
+    # (Only controls start ORDER, it doesn't wait until localstack is "ready".)
+    # 先启动 localstack，再启动这个容器。
+    depends_on:
+      - localstack
+
   # ============================================================
   # LocalStack: fake AWS running on your PC (for local testing)
   # ============================================================

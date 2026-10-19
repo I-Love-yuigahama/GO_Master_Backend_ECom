@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 	"path/filepath"
 	"strings"
+	"github.com/google/uuid"
 
 	"Ecom.com/TUT/internal/interfaces"
 )
@@ -26,7 +27,9 @@ func (s *UploadService) UploadProductImage(productID uint, file *multipart.FileH
 		return "", fmt.Errorf("invalid file type: %s", ext)
 	}
 
-	path := fmt.Sprintf("products/%d/%s", productID, file.Filename)
+	newFilename := uuid.New().String()
+
+	path := fmt.Sprintf("products/%d/%s%s", productID, newFilename,ext)
 
 	return s.provider.UploadFile(file, path)
 }
