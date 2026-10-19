@@ -13,6 +13,7 @@ import (
 	"Ecom.com/TUT/internal/config"
 	"Ecom.com/TUT/internal/database"
 	"Ecom.com/TUT/internal/logger"
+	"Ecom.com/TUT/internal/services"
 	"Ecom.com/TUT/server"
 	"github.com/gin-gonic/gin"
 )
@@ -41,7 +42,11 @@ func main() {
 
 	gin.SetMode(cfg.Server.GinMode)
 
-	srv := server.New(cfg, db, &log)
+	authServices := services.NewAuthService(db, cfg)
+	productService := services.NewProductServices(db)
+	userService := services.NewUserService(db)
+
+	srv := server.New(cfg, db, &log, authServices, productService, userService)
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{

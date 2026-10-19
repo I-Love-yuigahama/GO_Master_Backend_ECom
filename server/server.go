@@ -4,22 +4,35 @@ import (
 	"net/http"
 
 	"Ecom.com/TUT/internal/config"
+	"Ecom.com/TUT/internal/services"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 )
 
 type Server struct {
-	config *config.Config
-	db     *gorm.DB
-	logger *zerolog.Logger
+	config         *config.Config
+	db             *gorm.DB
+	logger         *zerolog.Logger
+	authServices   *services.AuthServices
+	productService *services.ProductServices
+	userService    *services.UserService
 }
 
-func New(cfg *config.Config, db *gorm.DB, logger *zerolog.Logger) *Server {
+func New(cfg *config.Config,
+	db *gorm.DB,
+	logger *zerolog.Logger,
+	authServices *services.AuthServices,
+	productService *services.ProductServices,
+	userService *services.UserService,
+) *Server {
 	return &Server{
-		config: cfg,
-		db:     db,
-		logger: logger,
+		config:         cfg,
+		db:             db,
+		logger:         logger,
+		authServices:   authServices,
+		productService: productService,
+		userService:    userService,
 	}
 }
 

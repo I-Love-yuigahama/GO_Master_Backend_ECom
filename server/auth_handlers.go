@@ -2,7 +2,6 @@ package server
 
 import (
 	"Ecom.com/TUT/dto"
-	"Ecom.com/TUT/internal/services"
 	"Ecom.com/TUT/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -16,8 +15,7 @@ func (s *Server) register(ctx *gin.Context) {
 		return
 	}
 
-	authService := services.NewAuthService(s.db, s.config)
-	response, err := authService.Register(&req)
+	response, err := s.authServices.Register(&req)
 
 	if err != nil {
 		utils.BadRequestResponse(ctx, "Invalid request data ", err)
@@ -37,8 +35,7 @@ func (s *Server) login(ctx *gin.Context) {
 		return
 	}
 
-	authservices := services.NewAuthService(s.db, s.config)
-	response, err := authservices.Login(&req)
+	response, err := s.authServices.Login(&req)
 
 	if err != nil {
 		utils.BadRequestResponse(ctx, "Invalid request data ", err)
@@ -58,8 +55,7 @@ func (s *Server) refreshToken(ctx *gin.Context) {
 		return
 	}
 
-	authservices := services.NewAuthService(s.db, s.config)
-	response, err := authservices.RefreshToken(&req)
+	response, err := s.authServices.RefreshToken(&req)
 
 	if err != nil {
 		utils.BadRequestResponse(ctx, "Invalid request data ", err)
@@ -79,8 +75,7 @@ func (s *Server) logout(ctx *gin.Context) {
 		return
 	}
 
-	authservices := services.NewAuthService(s.db, s.config)
-	if err := authservices.Logout(req.RefreshToken); err != nil {
+	if err := s.authServices.Logout(req.RefreshToken); err != nil {
 		utils.InternalServerErrorResponse(ctx, "Logout Failed", err)
 	}
 
@@ -91,8 +86,7 @@ func (s *Server) logout(ctx *gin.Context) {
 func (s *Server) getProfile(ctx *gin.Context) {
 
 	userId := ctx.GetUint("user_id")
-	userService := services.NewUserService(s.db)
-	profile, err := userService.GetProfile(userId)
+	profile, err := s.userService.GetProfile(userId)
 
 	if err != nil {
 		utils.NotFoundResponse(ctx, "Profile not found ")
@@ -113,8 +107,7 @@ func (s *Server) updateProfile(ctx *gin.Context) {
 		return
 	}
 
-	userServices := services.NewUserService(s.db)
-	updatedProfile, err := userServices.UpdateProfile(userId, &req)
+	updatedProfile, err := s.userService.UpdateProfile(userId, &req)
 
 	if err != nil {
 		utils.BadRequestResponse(ctx, "cant update the Profile", err)
