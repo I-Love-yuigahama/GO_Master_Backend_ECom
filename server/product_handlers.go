@@ -95,7 +95,7 @@ func (s *Server) createProduct(c *gin.Context) {
 	utils.CreatedResponse(c, "Product created successfully", product)
 }
 
- func (s *Server) getProducts(c *gin.Context) {
+func (s *Server) getProducts(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 

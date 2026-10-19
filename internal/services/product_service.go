@@ -158,46 +158,44 @@ func (s *ProductServices) GetProducts(page, limit int) ([]dto.ProductResponse, *
 	s.db.Model(&models.Product{}).Where("is_active = ?", true).Count(&total)
 
 	if err := s.db.Preload("Category").
-	Preload("Images").
-	Where("is_active = ?", true).
-	Offset(offset).
-	Limit(limit).
-	Find(&products).Error; err != nil {
+		Preload("Images").
+		Where("is_active = ?", true).
+		Offset(offset).
+		Limit(limit).
+		Find(&products).Error; err != nil {
 		return nil, nil, err
 	}
 
-	respone := make([]dto.ProductResponse,len(products))
-	for i := range products{
+	respone := make([]dto.ProductResponse, len(products))
+	for i := range products {
 		respone[i] = s.convertToProductResponse(&products[i])
 	}
 
-	totalPages := int((total + int64(limit)-1)/int64(limit))
+	totalPages := int((total + int64(limit) - 1) / int64(limit))
 
 	meta := &utils.PaginationMeta{
-		Page: page,
-		Limit: limit,
-		Total: total,
+		Page:       page,
+		Limit:      limit,
+		Total:      total,
 		TotalPages: totalPages,
 	}
 
-	return respone,meta,nil
-
+	return respone, meta, nil
 
 }
 
-func (s *ProductServices) GetProduct(id uint) (*dto.ProductResponse,error) {
+func (s *ProductServices) GetProduct(id uint) (*dto.ProductResponse, error) {
 
 	var product models.Product
 
-	if err := s.db.First(&product,id).Error; err != nil{
-		return nil,err
+	if err := s.db.First(&product, id).Error; err != nil {
+		return nil, err
 	}
 
-	respone:= s.convertToProductResponse(&product)
-	
-	return &respone,nil
-}
+	respone := s.convertToProductResponse(&product)
 
+	return &respone, nil
+}
 
 func (s *ProductServices) UpdateProduct(id uint, req *dto.UpdateProductRequest) (*dto.ProductResponse, error) {
 	var product models.Product

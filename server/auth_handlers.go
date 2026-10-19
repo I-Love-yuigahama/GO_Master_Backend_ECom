@@ -88,39 +88,39 @@ func (s *Server) logout(ctx *gin.Context) {
 
 }
 
-func (s *Server) getProfile(ctx *gin.Context){
+func (s *Server) getProfile(ctx *gin.Context) {
 
 	userId := ctx.GetUint("user_id")
 	userService := services.NewUserService(s.db)
-	profile , err := userService.GetProfile(userId)
+	profile, err := userService.GetProfile(userId)
 
-	if err != nil{
-		utils.NotFoundResponse(ctx,"Profile not found ")
+	if err != nil {
+		utils.NotFoundResponse(ctx, "Profile not found ")
 		return
 	}
 
-	utils.SuccessResponse(ctx,"Profile retrived successfully",profile)
+	utils.SuccessResponse(ctx, "Profile retrived successfully", profile)
 }
 
-func (s *Server) updateProfile(ctx *gin.Context){
+func (s *Server) updateProfile(ctx *gin.Context) {
 
 	userId := ctx.GetUint("user_id")
 
 	var req dto.UpdateProfileRequest
 
-	if err := ctx.ShouldBindJSON(&req); err != nil{
-		utils.BadRequestResponse(ctx,"Invalid requiest data ",err)
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.BadRequestResponse(ctx, "Invalid requiest data ", err)
 		return
 	}
 
 	userServices := services.NewUserService(s.db)
-	updatedProfile, err := userServices.UpdateProfile(userId,&req)
+	updatedProfile, err := userServices.UpdateProfile(userId, &req)
 
-	if err !=nil{
-		utils.BadRequestResponse(ctx,"cant update the Profile",err)
+	if err != nil {
+		utils.BadRequestResponse(ctx, "cant update the Profile", err)
 		return
 	}
 
-	utils.SuccessResponse(ctx,"Updated the Profile ",updatedProfile)
+	utils.SuccessResponse(ctx, "Updated the Profile ", updatedProfile)
 
 }
