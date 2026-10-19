@@ -222,3 +222,17 @@ func (s *ProductServices) UpdateProduct(id uint, req *dto.UpdateProductRequest) 
 func (s *ProductServices) DeleteProduct(id uint) error {
 	return s.db.Delete(&models.Product{}, id).Error
 }
+
+func (s *ProductServices) AddProductImage(productID uint, url, altText string) error {
+	var count int64
+	s.db.Model(&models.ProductImage{}).Where("product_id = ?", productID).Count(&count)
+
+	image := models.ProductImage{
+		ProductID: productID,
+		URL:       url,
+		AltText:   altText,
+		IsPrimary: count == 0, // First image is primary
+	}
+
+	return s.db.Create(&image).Error
+}

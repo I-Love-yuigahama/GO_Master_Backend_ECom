@@ -48,6 +48,8 @@ func (s *Server) SetupRoutes() *gin.Engine {
 	// add routes
 	router.GET("/health", s.healthCheck)
 
+	router.Static("/uploads", "./uploads")
+
 	api := router.Group("/api/v1")
 	{
 		auth := api.Group("/auth")
@@ -88,6 +90,7 @@ func (s *Server) SetupRoutes() *gin.Engine {
 				productRoute.POST("/", s.adminMiddleWares(), s.createProduct)
 				productRoute.PUT("/:id", s.adminMiddleWares(), s.updateProduct)
 				productRoute.DELETE("/:id", s.adminMiddleWares(), s.deleteProduct)
+				productRoute.POST("/:id/images", s.adminMiddleWares(), s.uploadProductImage)
 
 			}
 
