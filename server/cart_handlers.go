@@ -35,7 +35,7 @@ func (s *Server) addToCart(c *gin.Context) {
 		utils.BadRequestResponse(c, "Failed to add item to cart", err)
 		return
 	}
-		utils.SuccessResponse(c, "Item added to cart successfully", cart)
+	utils.SuccessResponse(c, "Item added to cart successfully", cart)
 }
 
 func (s *Server) updateCartItem(c *gin.Context) {
