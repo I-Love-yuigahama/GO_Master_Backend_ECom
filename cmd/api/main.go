@@ -47,6 +47,7 @@ func main() {
 	authServices := services.NewAuthService(db, cfg)
 	productService := services.NewProductServices(db)
 	userService := services.NewUserService(db)
+	cartService := services.NewCartServices(db)
 
 	var uploadProvider interfaces.UploadProvider
 
@@ -58,7 +59,7 @@ func main() {
 
 	uploadService := services.NewUploadServices(uploadProvider)
 
-	srv := server.New(cfg, db, &log, authServices, productService, userService, uploadService)
+	srv := server.New(cfg, db, &log, authServices, productService, userService, uploadService, cartService)
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{
