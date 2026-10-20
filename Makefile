@@ -48,3 +48,7 @@ migrate-drop:
 
 db-reset:
 	docker compose -f docker/docker-compose.yml exec postgres psql -U postgres -d ecommerce_shop -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
+docs-generate:
+	-mkdir docs
+	swag init -g cmd/api/main.go -o docs --parseDependency --parseInternal --exclude .git,docs,docker,db

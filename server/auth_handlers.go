@@ -6,6 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Register a new user
+// @Description Create a new user account with email and password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterRequest true "User registration data"
+// @Success 201 {object} utils.Response{data=dto.AuthResponse} "User registered successfully"
+// @Failure 400 {object} utils.Response "Invalid request data or user already exists"
+// @Router /auth/register [post]
+
 func (s *Server) register(ctx *gin.Context) {
 
 	var req dto.RegisterRequest
@@ -46,6 +56,16 @@ func (s *Server) login(ctx *gin.Context) {
 
 }
 
+// @Summary Refresh access token
+// @Description Get a new access token using refresh token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.RefreshTokenRequest true "Refresh token"
+// @Success 200 {object} utils.Response{data=dto.AuthResponse} "Token refreshed successfully"
+// @Failure 401 {object} utils.Response "Invalid refresh token"
+// @Router /auth/refresh [post]
+
 func (s *Server) refreshToken(ctx *gin.Context) {
 
 	var req dto.RefreshTokenRequest
@@ -83,6 +103,18 @@ func (s *Server) logout(ctx *gin.Context) {
 
 }
 
+
+// @Summary Update user profile
+// @Description Update current authenticated user's profile information
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.UpdateProfileRequest true "Profile update data"
+// @Success 200 {object} utils.Response{data=dto.UserResponse} "Profile updated successfully"
+// @Failure 400 {object} utils.Response "Invalid request data"
+// @Failure 401 {object} utils.Response "Unauthorized"
+// @Router /users/profile [put]
 func (s *Server) getProfile(ctx *gin.Context) {
 
 	userId := ctx.GetUint("user_id")
@@ -96,6 +128,18 @@ func (s *Server) getProfile(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, "Profile retrived successfully", profile)
 }
 
+
+// @Summary Update user profile
+// @Description Update current authenticated user's profile information
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.UpdateProfileRequest true "Profile update data"
+// @Success 200 {object} utils.Response{data=dto.UserResponse} "Profile updated successfully"
+// @Failure 400 {object} utils.Response "Invalid request data"
+// @Failure 401 {object} utils.Response "Unauthorized"
+// @Router /users/profile [put]
 func (s *Server) updateProfile(ctx *gin.Context) {
 
 	userId := ctx.GetUint("user_id")

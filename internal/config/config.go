@@ -48,6 +48,7 @@ type AWSConfig struct {
 	SecretAccessKey string // AWS secret key (use "test" for LocalStack)
 	S3Bucket        string // Name of the S3 bucket where files are stored
 	S3Endpoint      string // Custom S3 URL, e.g. "http://localhost:4566" for LocalStack; empty for real AWS
+	EventQueueName string
 }
 
 // UploadConfig holds the settings for file uploads.
@@ -99,6 +100,7 @@ func Load() (*Config, error) {
 			SecretAccessKey: getEnv("AWS_SECRET_ACCESS_KEY", "test"),
 			S3Bucket:        getEnv("AWS_S3_BUCKET", "ecommerce-uploads"),
 			S3Endpoint:      getEnv("AWS_S3_ENDPOINT", "http://localhost:4566"),
+			EventQueueName:      getEnv("AWS_EVENT_QUEUE_NAME", "ecommerce-events"),
 		},
 		Upload: UploadConfig{
 			Path:           getEnv("UPLOAD_PATH", "./uploads"),

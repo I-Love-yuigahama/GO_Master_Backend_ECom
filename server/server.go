@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"gorm.io/gorm"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -19,6 +22,7 @@ type Server struct {
 	userService    *services.UserService
 	uploadService  *services.UploadService
 	cartService    *services.CartServices
+	orderService   *services.OrderService
 }
 
 func New(cfg *config.Config,
@@ -29,6 +33,7 @@ func New(cfg *config.Config,
 	userService *services.UserService,
 	uploadService *services.UploadService,
 	cartService *services.CartServices,
+	orderService *services.OrderService,
 
 ) *Server {
 	return &Server{
@@ -40,6 +45,7 @@ func New(cfg *config.Config,
 		userService:    userService,
 		uploadService:  uploadService,
 		cartService:    cartService,
+		orderService:   orderService,
 	}
 }
 
@@ -56,6 +62,10 @@ func (s *Server) SetupRoutes() *gin.Engine {
 	router.GET("/health", s.healthCheck)
 
 	router.Static("/uploads", "./uploads")
+
+
+	// Add documentation routes
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("/api/v1")
 	{
@@ -109,6 +119,16 @@ func (s *Server) SetupRoutes() *gin.Engine {
 				cart.POST("/items", s.addToCart)
 				cart.PUT("/items/:id", s.updateCartItem)
 				cart.DELETE("/items/:id", s.removeFromCart)
+			}
+
+			// order
+			// Order routes
+			orders := protected.Group("/orders")
+			{
+				orderRoutes := orders
+				orderRoutes.POST("/", s.createOrder)
+				orderRoutes.GET("/", s.getOrders)
+				orderRoutes.GET("/:id", s.getOrder)
 			}
 
 		}

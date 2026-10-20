@@ -7,6 +7,7 @@ import (
 
 	"Ecom.com/TUT/dto"
 	"Ecom.com/TUT/internal/config"
+	"Ecom.com/TUT/internal/events"
 	"Ecom.com/TUT/models"
 	"Ecom.com/TUT/utils"
 	"gorm.io/gorm"
@@ -15,12 +16,14 @@ import (
 type AuthServices struct {
 	db     *gorm.DB
 	config *config.Config
+	eventPulisher events.Publisher
 }
 
-func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthServices {
+func NewAuthService(db *gorm.DB, cfg *config.Config, eventPulisher events.Publisher) *AuthServices {
 	return &AuthServices{
 		db:     db,
 		config: cfg,
+		eventPulisher: eventPulisher,
 	}
 }
 
@@ -129,6 +132,11 @@ func (s *AuthServices) generateAuthResponse(user *models.User) (*dto.AuthRespons
 	}
 
 	s.db.Create(&refreshTokenModel)
+
+	err = s.eventPulisher.Publish("USER_LOGGED_IN", user, map[string]string{})
+	if err != nil {
+		return nil, fmt.Errorf("unable to publish user login event: %w", err)
+	}
 
 	return &dto.AuthResponse{
 		User: dto.UserResponse{

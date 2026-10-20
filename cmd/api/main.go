@@ -12,6 +12,7 @@ import (
 
 	"Ecom.com/TUT/internal/config"
 	"Ecom.com/TUT/internal/database"
+	"Ecom.com/TUT/internal/events"
 	"Ecom.com/TUT/internal/interfaces"
 	"Ecom.com/TUT/internal/logger"
 	"Ecom.com/TUT/internal/providers"
@@ -19,6 +20,27 @@ import (
 	"Ecom.com/TUT/server"
 	"github.com/gin-gonic/gin"
 )
+
+// @title E-Commerce API
+// @version 1.0
+// @description A modern e-commerce API built with Go, Gin, and GORM
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name   Joseph Abah
+// @contact.url    http://linkedin.com/in/abahjoseph
+// @contact.email  no-email@no-email
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api
+// @schemas http https
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	log := logger.New()
@@ -42,12 +64,23 @@ func main() {
 
 	defer mainDB.Close()
 
+	ctx := context.Background()
+
+	eventPublisher , err := events.NewEventPublisher(ctx, &cfg.AWS)
+	if err != nil {
+	log.Error().Err(err).Msg("failed to create event publisher")
+		return
+	}
+
 	gin.SetMode(cfg.Server.GinMode)
 
-	authServices := services.NewAuthService(db, cfg)
+
+
+	authServices := services.NewAuthService(db, cfg,eventPublisher)
 	productService := services.NewProductServices(db)
 	userService := services.NewUserService(db)
 	cartService := services.NewCartServices(db)
+	ordertService := services.NewOderderSerice(db)
 
 	var uploadProvider interfaces.UploadProvider
 
@@ -59,7 +92,7 @@ func main() {
 
 	uploadService := services.NewUploadServices(uploadProvider)
 
-	srv := server.New(cfg, db, &log, authServices, productService, userService, uploadService, cartService)
+	srv := server.New(cfg, db, &log, authServices, productService, userService, uploadService, cartService, ordertService)
 	router := srv.SetupRoutes()
 
 	httpServer := &http.Server{
